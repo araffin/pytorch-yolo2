@@ -2,6 +2,9 @@ from utils import *
 from darknet import Darknet
 import cv2
 
+EXIT_KEYS = [113, 27]  # Escape and q
+
+
 def demo(cfgfile, weightfile):
     m = Darknet(cfgfile)
     m.print_network()
@@ -15,7 +18,7 @@ def demo(cfgfile, weightfile):
     else:
         namesfile = 'data/names'
     class_names = load_class_names(namesfile)
- 
+
     use_cuda = 1
     if use_cuda:
         m.cuda()
@@ -33,10 +36,12 @@ def demo(cfgfile, weightfile):
             print('------')
             draw_img = plot_boxes_cv2(img, bboxes, None, class_names)
             cv2.imshow(cfgfile, draw_img)
-            cv2.waitKey(1)
+            key = cv2.waitKey(1) & 0xFF
+            if key in EXIT_KEYS:  # exit
+                break
         else:
              print("Unable to read image")
-             exit(-1) 
+             exit(-1)
 
 ############################################
 if __name__ == '__main__':
